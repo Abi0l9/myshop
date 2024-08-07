@@ -1,7 +1,7 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-config = require("../utils/config");
+const config = require("../utils/config");
 
 const loginUser = async (req, res) => {
     const { email, username, password } = req.body;
@@ -23,7 +23,7 @@ const loginUser = async (req, res) => {
         const userPasswordHash = userExists.passwordHash;
 
         const isCorrect =
-            (await bcrypt.compareSync(password, userPasswordHash)) || null;
+            bcrypt.compareSync(password, userPasswordHash) || null;
 
         if (!isCorrect) {
             return res.status(401).json({

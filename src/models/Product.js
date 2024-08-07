@@ -1,7 +1,11 @@
 const { Schema, model } = require("mongoose");
 
 const schema = new Schema({
-    name: String,
+    name: {
+        type: String,
+        required: [true, 'Product name is required'],
+        minLength: [3, 'Name must be longer than 2 characters']
+    },
     description: String,
     price: String,
     image: String,
