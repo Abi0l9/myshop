@@ -4,15 +4,15 @@ const jwt = require("jsonwebtoken");
 const config = require("../utils/config");
 
 const loginUser = async (req, res) => {
-    const { email, username, password } = req.body;
-
-    const cred = username ? "username" : "email";
-    const body = { [cred]: username || email, password };
+    const { input, password } = req.body;
 
     try {
-        const userExists = await User.findOne({ [cred]: body[cred] });
+        const usernameExists = await User.findOne({ username: input });
+        const emailExists = await User.findOne({ email: input });
 
-        if (!userExists) {
+        const dataExists = usernameExists || emailExists
+
+        if (!dataExists) {
             return res.status(404).json({
                 success: false,
                 message: "User not found"
@@ -20,7 +20,7 @@ const loginUser = async (req, res) => {
         }
         
 
-        const userPasswordHash = userExists.passwordHash;
+        const userPasswordHash = dataExists.passwordHash;
 
         const isCorrect =
             bcrypt.compareSync(password, userPasswordHash) || null;
@@ -33,9 +33,9 @@ const loginUser = async (req, res) => {
         }
 
         const payload = {
-            id: userExists.id,
-            username: userExists.username,
-            email: userExists.email
+            id: dataExists.id,
+            username: dataExists.username,
+            email: dataExists.email
         };
         const token = jwt.sign(payload, config.SECRET);
 

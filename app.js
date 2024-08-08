@@ -5,6 +5,7 @@ const morgan = require("morgan");
 
 const authRoutes = require("./src/routes/auth");
 const productRoutes = require("./src/routes/product")
+const userRoutes = require("./src/routes/user")
 
 require("./src/db");
 
@@ -18,6 +19,8 @@ app.use(morgan("tiny"));
 //routes
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/users", userRoutes);
+
 app.use("/api/", (req, res) => {
     return res
         .status(200)

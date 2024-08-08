@@ -31,6 +31,25 @@ const getAProductById = async (req, res) => {
     }
 }
 
+const getAProductByName = async (req, res) => {
+    const name = req.query.name
+
+    try{
+        const products = await Product.find({})
+
+        const matches = products.filter(product => product.name.toLowerCase().includes(name.toLowerCase()))
+        return res.status(200).json({success: true, products: matches})
+    }
+    catch(error){
+        if(error.message.includes("Cast to ObjectId failed")){
+            return res.status(400).json({success: false, message: "Product ID is invalid"})
+        }
+        
+        return res.status(500).json({success: false, message: error.message})
+
+    }
+}
+
 const createAProduct = async (req, res) => {
     const body = req.body
     const userId = req.user.id
@@ -118,6 +137,7 @@ const deleteAProduct = async (req, res) => {
 module.exports = {
     getAllProducts,
     getAProductById,
+    getAProductByName,
     createAProduct,
     editAProduct,
     deleteAProduct

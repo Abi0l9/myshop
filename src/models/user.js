@@ -7,7 +7,16 @@ const schema = new Schema({
         required: [true, "name is required"],
         trim: true,
         maxlength: 50,
-        minlength: 4
+        minlength: 4,
+        validate: {
+            validator: value => {
+                const isHaveSpace = value.trim().includes(' ')
+                if (value.length >= 4 && isHaveSpace) {
+                    return false
+                }
+            },
+            message:  'cannot be blank or include blank space'
+        }
     },
     email: {
         type: String,
